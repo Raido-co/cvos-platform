@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ data.name }} - CV</title>
+    <style>
+        body { font-family: 'Helvetica', sans-serif; color: #333; line-height: 1.5; }
+        h1 { color: #2c3e50; margin-bottom: 5px; }
+        h2 { color: #2980b9; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .subtitle { font-size: 1.2em; color: #7f8c8d; }
+        .contact { font-size: 0.9em; margin-top: 10px; }
+        .section-item { margin-bottom: 15px; }
+        .company { font-weight: bold; }
+        .role { font-style: italic; }
+        .date { float: right; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>{{ data.name }}</h1>
+        <div class="subtitle">{{ data.title }}</div>
+        <div class="contact">
+            {{ data.email }} | {{ data.phone }}
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Resumen Profesional</h2>
+        <p>{{ data.summary }}</p>
+    </div>
+
+    <div class="section">
+        <h2>Experiencia</h2>
+        {% for job in data.experience %}
+        <div class="section-item">
+            <div class="company">{{ job.company }} <span class="date">{{ job.year }}</span></div>
+            <div class="role">{{ job.role }}</div>
+            <p>{{ job.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Educación</h2>
+        {% for edu in data.education %}
+        <div class="section-item">
+            <div class="company">{{ edu.institution }} <span class="date">{{ edu.year }}</span></div>
+            <div>{{ edu.degree }}</div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Habilidades</h2>
+        <p>{{ data.skills | join(', ') }}</p>
+    </div>
+</body>
+</html>
