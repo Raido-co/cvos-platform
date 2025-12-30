@@ -31,27 +31,38 @@ export default function CheckerPage() {
         formData.append("file", file)
 
         try {
-            // Nota: En producción NEXT_PUBLIC_API_URL debe ser https://<project>.up.railway.app
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+            // Robust URL construction
+            let baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+            // Remove trailing slash if present
+            if (baseUrl.endsWith('/')) {
+                baseUrl = baseUrl.slice(0, -1)
+            }
+
             const endpoint = useAI ? "/analyze-with-ai" : "/analyze"
+            const fullUrl = `${baseUrl}${endpoint}`
 
-            console.log("Connecting to:", `${apiUrl}${endpoint}`)
+            console.log("🚀 Connecting to API:", fullUrl)
 
-            const res = await fetch(`${apiUrl}${endpoint}`, {
+            const res = await fetch(fullUrl, {
                 method: "POST",
                 body: formData,
             })
 
             if (!res.ok) {
-                const errData = await res.json().catch(() => ({}))
-                throw new Error(errData.detail || `Error en el análisis (${res.status})`)
+                const contentType = res.headers.get("content-type")
+                if (contentType && contentType.includes("application/json")) {
+                    const errData = await res.json().catch(() => ({}))
+                    throw new Error(errData.detail || `Error API: ${res.status} ${res.statusText}`)
+                } else {
+                    throw new Error(`Error API: ${res.status} ${res.statusText} (Posible error de CORS o URL incorrecta)`)
+                }
             }
 
             const data = await res.json()
             setResult(data)
         } catch (err: any) {
-            console.error(err)
-            setError(err.message || "Error de conexión con el servidor.")
+            console.error("❌ API Error:", err)
+            setError(err.message || "Error al conectar con el servidor. Revisa la consola y la URL de la API.")
         } finally {
             setLoading(false)
         }
