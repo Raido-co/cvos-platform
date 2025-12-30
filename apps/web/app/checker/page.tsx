@@ -1,21 +1,24 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Upload, FileText, CheckCircle, AlertCircle, Loader2, Zap, Terminal, Command } from "lucide-react"
-import { Progress } from "@/components/ui/progress"
+import { Upload, FileText, CheckCircle, AlertCircle, Loader2, Zap, Terminal, Command, ArrowLeft } from "lucide-react"
 
 export default function CheckerPage() {
+    const router = useRouter()
     const [file, setFile] = useState<File | null>(null)
     const [loading, setLoading] = useState(false)
     const [result, setResult] = useState<any>(null)
     const [useAI, setUseAI] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             setFile(e.target.files[0])
             setResult(null)
+            setError(null)
         }
     }
 
@@ -23,25 +26,32 @@ export default function CheckerPage() {
         if (!file) return
 
         setLoading(true)
+        setError(null)
         const formData = new FormData()
         formData.append("file", file)
 
         try {
+            // Nota: En producción NEXT_PUBLIC_API_URL debe ser https://<project>.up.railway.app
             const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
             const endpoint = useAI ? "/analyze-with-ai" : "/analyze"
+
+            console.log("Connecting to:", `${apiUrl}${endpoint}`)
 
             const res = await fetch(`${apiUrl}${endpoint}`, {
                 method: "POST",
                 body: formData,
             })
 
-            if (!res.ok) throw new Error("Error en el análisis")
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}))
+                throw new Error(errData.detail || `Error en el análisis (${res.status})`)
+            }
 
             const data = await res.json()
             setResult(data)
-        } catch (error) {
-            console.error(error)
-            alert("Ocurrió un error al analizar el documento.")
+        } catch (err: any) {
+            console.error(err)
+            setError(err.message || "Error de conexión con el servidor.")
         } finally {
             setLoading(false)
         }
@@ -50,6 +60,13 @@ export default function CheckerPage() {
     return (
         <div className="min-h-screen bg-background p-8 flex flex-col items-center justify-center font-sans">
             <div className="max-w-4xl w-full space-y-8">
+                {/* Header & Nav */}
+                <div className="flex items-start justify-between w-full">
+                    <Button variant="ghost" className="text-muted-foreground hover:text-primary font-mono" onClick={() => router.push('/')}>
+                        <ArrowLeft className="mr-2 h-4 w-4" /> cd ..
+                    </Button>
+                </div>
+
                 <div className="text-center space-y-2">
                     <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full mb-4 ring-1 ring-primary/30">
                         <Terminal className="h-8 w-8 text-primary" />
@@ -70,7 +87,7 @@ export default function CheckerPage() {
                             <CardDescription className="font-mono text-xs">Target file for analysis (.PDF)</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            <div className="border-2 border-dashed border-border hover:border-primary/50 rounded-xl p-10 flex flex-col items-center justify-center text-center hover:bg-muted/30 transition-all cursor-pointer relative group">
+                            <div className={`border-2 border-dashed rounded-xl p-10 flex flex-col items-center justify-center text-center transition-all cursor-pointer relative group ${error ? 'border-red-500/50 bg-red-500/5' : 'border-border hover:border-primary/50 hover:bg-muted/30'}`}>
                                 <input
                                     type="file"
                                     accept=".pdf"
@@ -95,6 +112,13 @@ export default function CheckerPage() {
                                     </>
                                 )}
                             </div>
+
+                            {error && (
+                                <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-mono rounded flex items-center gap-2">
+                                    <AlertCircle className="h-4 w-4" />
+                                    {error}
+                                </div>
+                            )}
 
                             <div className="flex items-center gap-3 p-4 bg-secondary/30 rounded-lg border border-border/50">
                                 <input
@@ -128,7 +152,7 @@ export default function CheckerPage() {
                         </CardContent>
                     </Card>
 
-                    {/* Results Area - Sticky on Desktop */}
+                    {/* Results Area */}
                     <div className="lg:col-span-1">
                         {result ? (
                             <Card className="w-full h-full border-primary/20 bg-black/40 backdrop-blur shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-4">
@@ -181,7 +205,7 @@ export default function CheckerPage() {
                                 </CardContent>
                             </Card>
                         ) : (
-                            <div className="h-full border-2 border-dashed border-border/50 rounded-xl flex items-center justify-center p-8 text-center bg-card/20">
+                            <div className="h-full border-2 border-dashed border-border/50 rounded-xl flex items-center justify-center p-8 text-center bg-card/20 min-h-[300px]">
                                 <div className="space-y-2 text-muted-foreground/40 font-mono text-sm">
                                     <Terminal className="h-8 w-8 mx-auto mb-2" />
                                     <p>Waiting for input stream...</p>
