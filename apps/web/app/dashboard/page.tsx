@@ -110,10 +110,16 @@ export default function DashboardPage() {
 
     // Array Item Handlers (Generic)
     const addItem = <T extends { id: string }>(field: keyof ProfileData, newItem: T) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: [...(prev[field] as T[]), newItem]
-        }))
+        setFormData(prev => {
+            const currentList = prev[field]
+            if (Array.isArray(currentList)) {
+                return {
+                    ...prev,
+                    [field]: [...currentList, newItem]
+                }
+            }
+            return prev
+        })
     }
 
     const removeItem = (field: keyof ProfileData, id: string) => {
