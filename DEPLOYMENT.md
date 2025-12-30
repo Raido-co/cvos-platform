@@ -32,7 +32,7 @@
 5. **Variables de Entorno**:
    - Despliega la sección "Environment Variables".
    - Key: `NEXT_PUBLIC_API_URL`
-   - Value: `https://<tu-proyecto-railway>.up.railway.app` (Esto lo obtendrás en el paso C).
+   - Value: `https://<tu-proyecto-railway>.up.railway.app` cvos-platform-production.up.railway.app (Esto lo obtendrás en el paso C).
 6. **Deploy**: Click en "Deploy".
 
 ---
@@ -50,7 +50,7 @@
 5. **Variables**:
    - Ve a la pestaña **Variables**.
    - Añade `GOOGLE_API_KEY`: Pega tu llave de Google AI aquí.
-   - Añade `ALLOWED_ORIGINS`: `https://cv.raido.com.co` (o el dominio que te de Vercel temporalmente).
+   - Añade `ALLOWED_ORIGINS`: `https://cvos.raido.com.co` (o el dominio que te de Vercel temporalmente).
 6. **Generar Dominio**:
    - Ve a la pestaña **Settings** > **Networking**.
    - Click en "Generate Domain".
@@ -60,14 +60,14 @@
 
 ## D. Configuración DNS (Hostinger)
 
-Para que tu frontend responda en `cv.raido.com.co`:
+Para que tu frontend responda en `cvos.raido.com.co`:
 
 1. Entra a tu panel de **Hostinger > DNS Zone Editor** para `raido.com.co`.
 2. Crea un registro **CNAME**:
-   - **Name**: `cv`
+   - **Name**: `cvos`
    - **Target**: `cname.vercel-dns.com`
    - **TTL**: 3600
-3. En **Vercel > Settings > Domains**, añade `cv.raido.com.co`.
+3. En **Vercel > Settings > Domains**, añade `cvos.raido.com.co`.
 
 ---
 
