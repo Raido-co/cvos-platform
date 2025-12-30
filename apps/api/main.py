@@ -6,7 +6,7 @@ import shutil
 import json
 import os
 
-app = FastAPI(title="OpenATS API", version="1.0.0")
+app = FastAPI(title="cvOS API", version="1.0.0")
 
 # Configurar CORS para permitir peticiones desde el frontend (Vercel)
 origins = [
@@ -25,7 +25,7 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"status": "ok", "service": "OpenATS Backend"}
+    return {"status": "ok", "service": "cvOS Backend"}
 
 @app.post("/analyze")
 async def analyze_cv(file: UploadFile = File(...)):

@@ -1,0 +1,45 @@
+name: OpenATS CI
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: apps/web/package-lock.json
+    - name: Install Dependencies
+      run: |
+        cd apps/web
+        npm ci
+    - name: Build Frontend
+      run: |
+        cd apps/web
+        npm run build
+
+  test-backend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+    - name: Install Dependencies
+      run: |
+        cd apps/api
+        pip install -r requirements.txt
+    - name: Run Tests
+      # Idealmente aquí correrías pytest. Por ahora solo verificamos syntax checking.
+      run: |
+        cd apps/api
+        python -m compileall .
