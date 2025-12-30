@@ -1,5 +1,5 @@
 # Usamos una imagen base ligera de Python 3.11
-FROM python:3.11-slim
+FROM python:3.11-slim-bookworm
 
 # Evita que Python genere archivos .pyc y fuerza el log a stdout
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
     libharfbuzz-subset0 \
     libpango1.0-dev \
     libcairo2 \
-    libgdk-pixbuf2.0-0 \
+    libgdk-pixbuf-2.0-0 \
     libffi-dev \
     shared-mime-info \
     && rm -rf /var/lib/apt/lists/*
