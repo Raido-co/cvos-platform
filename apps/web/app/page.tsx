@@ -1,8 +1,17 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, FileCheck, Layout, Zap, Terminal, Code2, Cpu } from "lucide-react"
+import { ArrowRight, FileCheck, Layout, Zap, Terminal, Code2, Cpu, Globe } from "lucide-react"
+import { useLanguage } from "@/components/language-provider"
 
 export default function Home() {
+  const { t, locale, setLocale } = useLanguage()
+
+  const toggleLanguage = () => {
+    setLocale(locale === 'en' ? 'es' : 'en')
+  }
+
   return (
     <div className="flex flex-col min-h-screen font-sans selection:bg-primary/20 selection:text-primary">
       {/* Header */}
@@ -11,11 +20,16 @@ export default function Home() {
           <Terminal className="h-6 w-6" />
           <span>cvOS</span>
         </div>
-        <nav className="flex gap-6 text-sm font-medium text-muted-foreground">
-          <Link href="/checker" className="hover:text-primary transition-colors duration-200">Checking</Link>
-          <Link href="/dashboard" className="hover:text-primary transition-colors duration-200">Dashboard</Link>
+        <nav className="flex gap-6 text-sm font-medium text-muted-foreground hidden md:flex">
+          <Link href="/checker" className="hover:text-primary transition-colors duration-200">{t("nav.checking")}</Link>
+          <Link href="/dashboard" className="hover:text-primary transition-colors duration-200">{t("nav.dashboard")}</Link>
         </nav>
-        <div className="ml-auto flex gap-4">
+        <div className="ml-auto flex gap-4 items-center">
+          <Button variant="ghost" size="sm" onClick={toggleLanguage} className="font-mono text-xs">
+            <Globe className="mr-2 h-3 w-3" />
+            {locale.toUpperCase()}
+          </Button>
+
           <Link href="/checker">
             <Button className="font-mono bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20">
               Initialize_CV <ArrowRight className="ml-2 h-4 w-4" />
@@ -39,32 +53,32 @@ export default function Home() {
           </div>
 
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-foreground mb-6 font-sans">
-            Recruiting Logic, <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">Decompiled.</span>
+            {t("hero.title")} <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">{t("hero.subtitle")}</span>
           </h1>
 
           <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
-            Reverse engineer the hiring process. Analyze your resume against ATS algorithms and optimize with AI-driven insights.
+            {t("hero.desc")}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md mx-auto">
             <Link href="/checker" className="w-full">
               <Button size="lg" className="w-full h-14 text-lg bg-primary hover:bg-primary/90 font-mono shadow-xl shadow-primary/20 border border-primary/20">
-                <Code2 className="mr-2 h-5 w-5" /> Run Diagnostics
+                <Code2 className="mr-2 h-5 w-5" /> {t("hero.cta")}
               </Button>
             </Link>
             <Link href="/dashboard" className="w-full">
               <Button size="lg" variant="outline" className="w-full h-14 text-lg bg-background/50 backdrop-blur border-border hover:bg-accent/50 hover:text-accent-foreground font-mono">
-                Open Dashboard
+                {t("hero.dashboard")}
               </Button>
             </Link>
           </div>
 
           <div className="mt-12 pt-8 border-t border-border/40 flex items-center justify-center gap-8 text-muted-foreground/50 grayscale hover:grayscale-0 transition-all duration-500">
-            <div className="flex flex-col items-center gap-2">
-              <span className="text-xs font-mono uppercase tracking-widest">Powered By</span>
-              <span className="text-lg font-bold text-foreground">RAIDO</span>
-            </div>
+            <a href="https://raido.com.co" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 hover:text-primary transition-colors cursor-pointer group">
+              <span className="text-xs font-mono uppercase tracking-widest group-hover:text-primary">Powered By</span>
+              <span className="text-lg font-bold text-foreground group-hover:text-primary">RAIDO</span>
+            </a>
           </div>
         </section>
 
@@ -87,7 +101,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-lg font-semibold font-mono mb-2 text-foreground">ATS_Parser</h3>
                 <p className="text-sm text-muted-foreground">
-                  Heuristic analysis engine that decodes PDF structures to verify machine-readability.
+                  {t("features.ats")}
                 </p>
               </div>
 
@@ -97,7 +111,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-lg font-semibold font-mono mb-2 text-foreground">Layout_Engine</h3>
                 <p className="text-sm text-muted-foreground">
-                  Server-side rendering (WeasyPrint) to generate Harvard-standard standardized documents.
+                  {t("features.layout")}
                 </p>
               </div>
 
@@ -107,7 +121,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-lg font-semibold font-mono mb-2 text-foreground">Gemini_Core</h3>
                 <p className="text-sm text-muted-foreground">
-                  Integrated LLM analysis for deep semantic evaluation of professional experience.
+                  {t("features.ai")}
                 </p>
               </div>
             </div>
