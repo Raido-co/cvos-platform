@@ -1,96 +1,77 @@
-# 🚀 cvOS: El Sistema para tu CV
+# cvOS: ATS Analysis & Professional CV Generation Platform
 
-Bienvenido a **cvOS**. Si estás buscando trabajo y sientes que los robots (ATS) te descartan injustamente, esta herramienta es para ti.
+cvOS is a high-performance, open-source platform designed to optimize the job application process. It leverages heuristic analysis and Large Language Models (LLMs) to ensure CV compatibility with modern Applicant Tracking Systems (ATS).
 
-**cvOS** te ayuda a analizar tu CV, mejorarlo con Inteligencia Artificial (Google Gemini) y generar un PDF perfecto que los reclutadores amarán.
+## Project Overview
 
----
+The platform provides a comprehensive suite of tools for candidates to analyze, optimize, and generate professional resumes. By utilizing a modular monorepo architecture, cvOS separates concerns between the rendering engine, the analytical backend, and the interactive frontend.
 
-## ✨ ¿Qué hace este proyecto?
+## Core Features
 
-Este sistema tiene 4 funciones principales:
+### 1. ATS Compliance Engine
+- **Heuristic Section Detection**: Implements automated parsing of PDF documents to identify standard resume components (Work Experience, Education, Technical Skills, etc.).
+- **Readability Scoring**: Evaluates document parseability to ensure compatibility with automated recruitment software.
 
-1.  **🔍 ATS Checker ("El Juez")**:
-    - Subes tu CV actual (PDF).
-    - Te dice qué porcentaje de compatibilidad tiene con los sistemas de reclutamiento.
-    - Te avisa si te faltan secciones claves como "Experiencia" o "Contacto".
+### 2. LLM-Powered Analysis (Gemini Pro)
+- **Deep Semantic Analysis**: Integration with Google Generative AI for qualitative feedback on professional experience and skill alignment.
+- **Optimization Reporting**: Detailed feedback on strengths, critical weaknesses, and recommended keyphrase injections.
 
-2.  **🧠 Modo IA Premium ("El Consultor")**:
-    - Usa **Inteligencia Artificial** (Google Gemini) para leer tu hoja de vida a profundidad.
-    - Te dice tus **puntos fuertes** (para que los resaltes).
-    - Te dice tus **debilidades** (para que las corrijas).
+### 3. Professional PDF Generation
+- **WeasyPrint Engine**: Server-side PDF rendering using HTML5/CSS3 templates for pixel-perfect, ATS-parseable exports.
+- **Jinja2 Templating**: Dynamic content injection into standardized, recruiter-approved layouts.
 
-3.  **📄 Generador de PDF ("El Artista")**:
-    - Crea un CV nuevo y limpio desde cero.
-    - Usa un diseño "Harvard Style" (minimalista) que es el estándar de oro para pasar filtros.
+## Technical Architecture
 
-4.  **📊 Dashboard**:
-    - Tu centro de mando para guardar tu experiencia y skills y no tener que escribirlas mil veces.
+The project follows a Monorepo structure for consolidated management of both frontend and backend services:
 
----
+- **Frontend (`/apps/web`)**: 
+  - Framework: Next.js 15 (App Router)
+  - UI: TailwindCSS + Shadcn/ui
+  - Deployment: Optimized for Vercel Edge Network
+- **Backend (`/apps/api`)**:
+  - Framework: FastAPI (Python 3.11)
+  - Processing: PyMuPDF (Text Extraction) and WeasyPrint (PDF Generation)
+  - AI Service: Google Generative AI (Gemini Pro)
+  - Deployment: Containerized via Docker for Railway.app
 
-## 🏗️ ¿Cómo está construido? ("Para Techies")
+## Infrastructure & CI/CD
 
-Esto es un **Monorepo** (una gran carpeta con todo el código junto).
+- **GitHub Actions**: Automated CI pipeline for build verification and syntax validation.
+- **Environment Management**: Decoupled configuration via environment variables for security and scalability.
 
-- **La cara bonita (Frontend)**: Está en la carpeta `apps/web`.
-  - Usa **Next.js** (React) modernísimo.
-  - Diseño con **TailwindCSS** (se ve bien en móvil y PC).
-  - Se despliega fácil en **Vercel**.
+## Local Development
 
-- **El cerebro (Backend)**: Está en la carpeta `apps/api`.
-  - Usa **Python** con **FastAPI** (rápido y eficiente).
-  - Usa **WeasyPrint** para dibujar los PDFs.
-  - Se despliega fácil en **Railway**.
+### Prerequisites
+- Python 3.11+
+- Node.js 18+
+- Google Generative AI API Key
 
----
+### Installation
 
-## 🚦 ¿Cómo lo uso en mi computadora?
-
-Si quieres probarlo o modificarlo en tu PC, sigue estos pasos:
-
-### 1. Requisitos previos
-Necesitas tener instalado:
-- [Git](https://git-scm.com/) (para bajar el código)
-- [Python 3.11](https://www.python.org/) (para el cerebro)
-- [Node.js](https://nodejs.org/) (para la cara bonita)
-
-### 2. Descargar el código
+1. Clone the repository:
 ```bash
 git clone https://github.com/Raido-co/cvos-platform.git
 cd cvos-platform
 ```
 
-### 3. Encender el Cerebro (Backend)
-Abre una terminal y corre:
+2. Initialize Backend Service:
 ```bash
 cd apps/api
 pip install -r requirements.txt
-# IMPORTANTE: Necesitas una Google API Key para la IA
-export GOOGLE_API_KEY="tu_clave_secreta_aqui"
+# Set GOOGLE_API_KEY environment variable
 uvicorn main:app --reload
 ```
-*El backend quedará corriendo en http://localhost:8000*
 
-### 4. Encender la Cara Bonita (Frontend)
-Abre **otra** terminal y corre:
+3. Initialize Frontend Service:
 ```bash
 cd apps/web
 npm install
 npm run dev
 ```
-*Abre tu navegador en http://localhost:3000 y ¡listo!*
 
----
+## Documentation
 
-## ☁️ ¿Cómo lo subo a Internet?
+For comprehensive deployment instructions including DNS configuration and platform settings, refer to the [Deployment Guide (DEPLOYMENT.md)](./DEPLOYMENT.md).
 
-Hemos preparado una guía paso a paso (súper detallada) para que lo tengas online en minutos usando servicios mayormente gratuitos.
-
-👉 **[Leer la Guía de Despliegue (DEPLOYMENT.md)](./DEPLOYMENT.md)**
-
----
-
-## 🏛️ Sobre el Proyecto
-Desarrollado con ❤️ por la organización **Raido**.
-*Bootstrap your career.*
+## License & Maintenance
+Managed by the **[Raido](https://github.com/Raido-co)** organization.
