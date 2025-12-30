@@ -1,4 +1,4 @@
-# 🚀 cvOS: El Sistema Operativo para tu Carrera
+# 🚀 cvOS: El Sistema para tu CV
 
 Bienvenido a **cvOS**. Si estás buscando trabajo y sientes que los robots (ATS) te descartan injustamente, esta herramienta es para ti.
 
