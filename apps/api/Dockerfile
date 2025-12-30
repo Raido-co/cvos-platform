@@ -38,4 +38,5 @@ COPY . .
 EXPOSE 8000
 
 # Comando para correr la aplicación FastAPI con Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Usamos shell form para permitir la expansión de variables de entorno ($PORT)
+CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8080}
