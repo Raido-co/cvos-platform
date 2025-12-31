@@ -11,7 +11,9 @@ app = FastAPI(title="cvOS API", version="1.0.0")
 # Configurar CORS para permitir peticiones desde el frontend (Vercel)
 origins = [
     "http://localhost:3000",
-    "https://cv.raido.com.co",  # Production Domain
+    "https://cv.raido.com.co",
+    "https://cvos.raido.com.co", # Correct production domain
+    "https://cvos-platform.vercel.app", # Vercel default
     "https://cv-raido.com.co",
 ]
 
