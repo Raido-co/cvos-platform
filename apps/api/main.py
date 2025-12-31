@@ -95,6 +95,35 @@ async def analyze_cv_ai(file: UploadFile = File(...)):
         if os.path.exists(temp_filename):
             os.remove(temp_filename)
 
+@app.post("/generate-pdf")
+async def generate_pdf(data: dict):
+    """
+    Genera un PDF del CV basado en los datos del formulario.
+    Retorna el archivo PDF como descarga.
+    """
+    from pdf_generator import PDFGenerator
+    from fastapi.responses import FileResponse
+    import uuid
+    
+    try:
+        generator = PDFGenerator()
+        
+        # Generar nombre único para el archivo
+        filename = f"cv_{data.get('fullName', 'unknown').replace(' ', '_')}_{uuid.uuid4().hex[:8]}.pdf"
+        output_path = f"/tmp/{filename}"
+        
+        # Generar PDF
+        generator.generate_cv(data, output_path)
+        
+        # Retornar archivo
+        return FileResponse(
+            path=output_path,
+            filename=filename,
+            media_type="application/pdf"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generando PDF: {str(e)}")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)

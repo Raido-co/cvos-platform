@@ -1,6 +1,6 @@
 "use client"
 
-import React, { createContext, useContext, useState, ReactNode } from "react"
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react"
 
 export type Locale = 'en' | 'es'
 
@@ -12,38 +12,90 @@ type LanguageContextType = {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
-const translations = {
+const translations: Record<Locale, Record<string, string>> = {
     en: {
-        "nav.checking": "Checking",
-        "nav.dashboard": "Dashboard",
-        "hero.title": "Recruiting Logic,",
-        "hero.subtitle": "Decompiled.",
-        "hero.desc": "Reverse engineer the hiring process. Analyze your resume against ATS algorithms and optimize with AI-driven insights.",
-        "hero.cta": "Run Diagnostics",
-        "hero.dashboard": "Open Dashboard",
-        "features.ats": "Heuristic analysis engine that decodes PDF structures to verify machine-readability.",
-        "features.layout": "Server-side rendering (WeasyPrint) to generate Harvard-standard standardized documents.",
-        "features.ai": "Integrated LLM analysis for deep semantic evaluation of professional experience."
+        // Navigation
+        "nav.checking": "ATS Check",
+        "nav.dashboard": "Create CV",
+
+        // Hero - Clear value proposition
+        "hero.title": "Beat the Resume Bots.",
+        "hero.subtitle": "Land More Interviews.",
+        "hero.desc": "Most CVs are rejected by ATS (Applicant Tracking Systems) before a human ever sees them. We help you optimize your resume to pass these filters and get noticed.",
+        "hero.cta": "Analyze My CV",
+        "hero.dashboard": "Create My CV",
+
+        // What is ATS section
+        "ats.title": "What is an ATS?",
+        "ats.desc": "An Applicant Tracking System is software that companies use to automatically filter thousands of resumes. It scans for keywords, analyzes formatting, and scores candidates before a recruiter ever sees your CV.",
+
+        // Features
+        "features.ats": "Upload your CV and get instant feedback on ATS compatibility, keyword density, and formatting issues.",
+        "features.layout": "Generate professional, ATS-friendly CVs using proven templates that pass automated filters.",
+        "features.ai": "Get AI-powered suggestions to improve your resume content and increase your interview chances.",
+
+        // CTA
+        "cta.premium": "Go Pro for AI-powered improvements →"
     },
     es: {
-        "nav.checking": "Verificador",
-        "nav.dashboard": "Panel de Control",
-        "hero.title": "Lógica de Reclutamiento,",
-        "hero.subtitle": "Descompilada.",
-        "hero.desc": "Realiza ingeniería inversa a tu proceso de contratación. Analiza tu CV contra algoritmos ATS y optimízalo con IA.",
-        "hero.cta": "Ejecutar Diagnóstico",
-        "hero.dashboard": "Abrir Panel",
-        "features.ats": "Motor de análisis heurístico que decodifica estructuras PDF para verificar legibilidad por máquina.",
-        "features.layout": "Renderizado del lado del servidor (WeasyPrint) para generar documentos estandarizados formato Harvard.",
-        "features.ai": "Análisis LLM integrado para evaluación semántica profunda de experiencia profesional."
+        // Navegación
+        "nav.checking": "Verificar CV",
+        "nav.dashboard": "Crear CV",
+
+        // Hero - Propuesta de valor clara
+        "hero.title": "Supera los Filtros ATS.",
+        "hero.subtitle": "Consigue Más Entrevistas.",
+        "hero.desc": "La mayoría de CVs son rechazados por sistemas ATS (Applicant Tracking Systems) antes de que un humano los vea. Te ayudamos a optimizar tu currículum para pasar estos filtros automáticos.",
+        "hero.cta": "Analizar Mi CV",
+        "hero.dashboard": "Crear Mi CV",
+
+        // Qué es ATS
+        "ats.title": "¿Qué es un ATS?",
+        "ats.desc": "Un Sistema de Seguimiento de Candidatos es un software que las empresas usan para filtrar automáticamente miles de currículums. Busca palabras clave, analiza el formato y puntúa candidatos antes de que un reclutador vea tu CV.",
+
+        // Features
+        "features.ats": "Sube tu CV y obtén feedback instantáneo sobre compatibilidad ATS, densidad de palabras clave y problemas de formato.",
+        "features.layout": "Genera CVs profesionales y compatibles con ATS usando plantillas probadas que pasan filtros automáticos.",
+        "features.ai": "Obtén sugerencias con IA para mejorar el contenido de tu currículum y aumentar tus posibilidades de entrevista.",
+
+        // CTA
+        "cta.premium": "Hazte Pro para mejoras con IA →"
     }
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-    const [locale, setLocale] = useState<Locale>('es') // Default to Spanish as requested via "changing language to ES/EN"
+    const [locale, setLocaleState] = useState<Locale>('es')
+    const [isHydrated, setIsHydrated] = useState(false)
 
-    const t = (key: string) => {
-        return translations[locale][key as keyof typeof translations['en']] || key
+    // Load from localStorage on mount
+    useEffect(() => {
+        const saved = localStorage.getItem('cvos_locale') as Locale
+        if (saved && (saved === 'en' || saved === 'es')) {
+            setLocaleState(saved)
+        } else {
+            // Auto-detect browser language
+            const browserLang = navigator.language.toLowerCase()
+            if (browserLang.startsWith('en')) {
+                setLocaleState('en')
+            } else {
+                setLocaleState('es')
+            }
+        }
+        setIsHydrated(true)
+    }, [])
+
+    const setLocale = (newLocale: Locale) => {
+        setLocaleState(newLocale)
+        localStorage.setItem('cvos_locale', newLocale)
+    }
+
+    const t = (key: string): string => {
+        return translations[locale][key] || key
+    }
+
+    // Prevent hydration mismatch
+    if (!isHydrated) {
+        return <>{children}</>
     }
 
     return (

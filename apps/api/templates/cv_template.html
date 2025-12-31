@@ -1,59 +1,196 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
-    <title>{{ data.name }} - CV</title>
+    <title>{{ data.fullName }} - CV</title>
     <style>
-        body { font-family: 'Helvetica', sans-serif; color: #333; line-height: 1.5; }
-        h1 { color: #2c3e50; margin-bottom: 5px; }
-        h2 { color: #2980b9; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 20px; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .subtitle { font-size: 1.2em; color: #7f8c8d; }
-        .contact { font-size: 0.9em; margin-top: 10px; }
-        .section-item { margin-bottom: 15px; }
-        .company { font-weight: bold; }
-        .role { font-style: italic; }
-        .date { float: right; color: #7f8c8d; }
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            color: #2c3e50;
+            line-height: 1.5;
+            font-size: 11pt;
+        }
+
+        h1 {
+            font-size: 24pt;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        h2 {
+            font-size: 12pt;
+            color: #34495e;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 4px;
+            margin: 18px 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 14pt;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+        }
+
+        .contact {
+            font-size: 9pt;
+            color: #95a5a6;
+        }
+
+        .contact a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .section {
+            margin-bottom: 16px;
+        }
+
+        .item {
+            margin-bottom: 12px;
+            page-break-inside: avoid;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+
+        .item-title {
+            font-weight: bold;
+            font-size: 11pt;
+        }
+
+        .item-date {
+            color: #7f8c8d;
+            font-size: 9pt;
+        }
+
+        .item-subtitle {
+            font-style: italic;
+            color: #7f8c8d;
+            font-size: 10pt;
+        }
+
+        .item-location {
+            font-size: 9pt;
+            color: #95a5a6;
+        }
+
+        .item-desc {
+            margin-top: 4px;
+            font-size: 10pt;
+            white-space: pre-line;
+        }
+
+        .skills-list {
+            font-size: 10pt;
+            line-height: 1.6;
+        }
+
+        .summary {
+            font-size: 10pt;
+            line-height: 1.6;
+            text-align: justify;
+        }
     </style>
 </head>
+
 <body>
     <div class="header">
-        <h1>{{ data.name }}</h1>
+        <h1>{{ data.fullName }}</h1>
         <div class="subtitle">{{ data.title }}</div>
         <div class="contact">
-            {{ data.email }} | {{ data.phone }}
+            {{ data.email }} {% if data.phone %}| {{ data.phone }}{% endif %}
+            {% if data.location %}| {{ data.location }}{% endif %}
+            <br>
+            {% if data.github %}<a href="https://{{ data.github }}">{{ data.github }}</a> {% endif %}
+            {% if data.website %}| <a href="https://{{ data.website }}">{{ data.website }}</a>{% endif %}
         </div>
     </div>
 
+    {% if data.summary %}
     <div class="section">
         <h2>Resumen Profesional</h2>
-        <p>{{ data.summary }}</p>
+        <p class="summary">{{ data.summary }}</p>
     </div>
+    {% endif %}
 
+    {% if data.experience and data.experience|length > 0 %}
     <div class="section">
-        <h2>Experiencia</h2>
+        <h2>Experiencia Profesional</h2>
         {% for job in data.experience %}
-        <div class="section-item">
-            <div class="company">{{ job.company }} <span class="date">{{ job.year }}</span></div>
-            <div class="role">{{ job.role }}</div>
-            <p>{{ job.description }}</p>
+        <div class="item">
+            <div class="item-header">
+                <span class="item-title">{{ job.position }} - {{ job.company }}</span>
+                <span class="item-date">{{ job.startDate }} - {{ job.endDate }}</span>
+            </div>
+            {% if job.location %}<div class="item-location">{{ job.location }}</div>{% endif %}
+            {% if job.description %}<div class="item-desc">{{ job.description }}</div>{% endif %}
         </div>
         {% endfor %}
     </div>
+    {% endif %}
 
+    {% if data.education and data.education|length > 0 %}
     <div class="section">
         <h2>Educación</h2>
         {% for edu in data.education %}
-        <div class="section-item">
-            <div class="company">{{ edu.institution }} <span class="date">{{ edu.year }}</span></div>
-            <div>{{ edu.degree }}</div>
+        <div class="item">
+            <div class="item-header">
+                <span class="item-title">{{ edu.institution }}</span>
+                <span class="item-date">{{ edu.startDate }} - {{ edu.endDate }}</span>
+            </div>
+            <div class="item-subtitle">{{ edu.degree }}</div>
+            {% if edu.location %}<div class="item-location">{{ edu.location }}</div>{% endif %}
         </div>
         {% endfor %}
     </div>
+    {% endif %}
 
+    {% if data.skills %}
     <div class="section">
-        <h2>Habilidades</h2>
-        <p>{{ data.skills | join(', ') }}</p>
+        <h2>Habilidades Técnicas</h2>
+        <p class="skills-list">{{ data.skills }}</p>
     </div>
+    {% endif %}
+
+    {% if data.languages %}
+    <div class="section">
+        <h2>Idiomas</h2>
+        <p class="skills-list">{{ data.languages }}</p>
+    </div>
+    {% endif %}
+
+    {% if data.certifications and data.certifications|length > 0 %}
+    <div class="section">
+        <h2>Certificaciones</h2>
+        {% for cert in data.certifications %}
+        <div class="item">
+            <span class="item-title">{{ cert.name }}</span> - {{ cert.issuer }} ({{ cert.date }})
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 </body>
+
 </html>

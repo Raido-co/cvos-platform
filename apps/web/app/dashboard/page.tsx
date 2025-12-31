@@ -446,11 +446,44 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                    <Button size="lg" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl">
-                        <Download className="mr-2 h-5 w-5" /> Download PDF (Generate)
+                    <Button
+                        size="lg"
+                        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl"
+                        onClick={async () => {
+                            try {
+                                let baseUrl = process.env.NEXT_PUBLIC_API_URL
+                                    || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+                                        ? "https://cvos-platform-production.up.railway.app"
+                                        : "http://localhost:8000")
+                                if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1)
+
+                                const res = await fetch(`${baseUrl}/generate-pdf`, {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify(formData)
+                                })
+
+                                if (!res.ok) throw new Error("Error generando PDF")
+
+                                const blob = await res.blob()
+                                const url = window.URL.createObjectURL(blob)
+                                const a = document.createElement('a')
+                                a.href = url
+                                a.download = `${formData.fullName.replace(/\s/g, '_')}_CV.pdf`
+                                document.body.appendChild(a)
+                                a.click()
+                                a.remove()
+                                window.URL.revokeObjectURL(url)
+                            } catch (err) {
+                                alert("Error generando PDF. Por favor intenta de nuevo.")
+                                console.error(err)
+                            }
+                        }}
+                    >
+                        <Download className="mr-2 h-5 w-5" /> Descargar PDF
                     </Button>
                     <p className="text-xs text-center text-muted-foreground">
-                        * PDF Generation connects to the Python backend (WeasyPrint)
+                        * PDF generado con plantilla Harvard optimizada para ATS
                     </p>
                 </div>
             </CardContent>

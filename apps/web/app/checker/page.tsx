@@ -4,7 +4,48 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Upload, FileText, CheckCircle, AlertCircle, Loader2, Zap, Terminal, Command, ArrowLeft } from "lucide-react"
+import { Upload, FileText, CheckCircle, AlertCircle, Loader2, Zap, Terminal, Command, ArrowLeft, ChevronDown, ChevronUp, AlertTriangle, Lightbulb, TrendingUp } from "lucide-react"
+
+// Collapsible Section Component
+function CollapsibleSection({ title, icon: Icon, items, variant = 'default' }: {
+    title: string
+    icon: any
+    items: string[]
+    variant?: 'default' | 'warning' | 'success'
+}) {
+    const [isOpen, setIsOpen] = useState(true)
+
+    const colors = {
+        default: 'text-muted-foreground border-border',
+        warning: 'text-yellow-400 border-yellow-500/30 bg-yellow-500/5',
+        success: 'text-green-400 border-green-500/30 bg-green-500/5'
+    }
+
+    return (
+        <div className={`border rounded-lg overflow-hidden ${colors[variant]}`}>
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full flex items-center justify-between p-3 hover:bg-muted/20 transition-colors"
+            >
+                <div className="flex items-center gap-2 text-xs uppercase font-semibold">
+                    <Icon className="h-3.5 w-3.5" />
+                    {title}
+                </div>
+                {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </button>
+            {isOpen && (
+                <div className="px-3 pb-3 space-y-2">
+                    {items.map((item, i) => (
+                        <div key={i} className="flex items-start gap-2 text-xs">
+                            <span className="mt-0.5">•</span>
+                            <span className="text-muted-foreground">{item}</span>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
 
 export default function CheckerPage() {
     const router = useRouter()
@@ -36,7 +77,6 @@ export default function CheckerPage() {
                 || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
                     ? "https://cvos-platform-production.up.railway.app"
                     : "http://localhost:8000")
-            // Remove trailing slash if present
             if (baseUrl.endsWith('/')) {
                 baseUrl = baseUrl.slice(0, -1)
             }
@@ -65,15 +105,15 @@ export default function CheckerPage() {
             setResult(data)
         } catch (err: any) {
             console.error("❌ API Error:", err)
-            setError(err.message || "Error al conectar con el servidor. Revisa la consola y la URL de la API.")
+            setError(err.message || "Error al conectar con el servidor.")
         } finally {
             setLoading(false)
         }
     }
 
     return (
-        <div className="min-h-screen bg-background p-8 flex flex-col items-center justify-center font-sans">
-            <div className="max-w-4xl w-full space-y-8">
+        <div className="min-h-screen bg-background p-4 md:p-8 flex flex-col items-center font-sans">
+            <div className="max-w-6xl w-full space-y-8">
                 {/* Header & Nav */}
                 <div className="flex items-start justify-between w-full">
                     <Button variant="ghost" className="text-muted-foreground hover:text-primary font-mono" onClick={() => router.push('/')}>
@@ -85,31 +125,31 @@ export default function CheckerPage() {
                     <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full mb-4 ring-1 ring-primary/30">
                         <Terminal className="h-8 w-8 text-primary" />
                     </div>
-                    <h1 className="text-4xl font-extrabold text-foreground font-mono tracking-tight">System_Diagnostics</h1>
-                    <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                        Initiate heuristic scan or LLM-based deep analysis of your resume artifact.
+                    <h1 className="text-3xl md:text-4xl font-extrabold text-foreground font-mono tracking-tight">Analizador ATS</h1>
+                    <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto">
+                        Verifica si tu CV pasará los filtros automáticos de reclutamiento (ATS).
                     </p>
                 </div>
 
-                <div className="grid lg:grid-cols-3 gap-8">
+                <div className="grid lg:grid-cols-2 gap-8">
                     {/* Upload Area */}
-                    <Card className="lg:col-span-2 border-border/60 bg-card/60 backdrop-blur shadow-xl">
+                    <Card className="border-border/60 bg-card/60 backdrop-blur shadow-xl">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 font-mono text-lg">
-                                <Command className="h-4 w-4 text-primary" /> Input_Source
+                                <Command className="h-4 w-4 text-primary" /> Subir CV
                             </CardTitle>
-                            <CardDescription className="font-mono text-xs">Target file for analysis (.PDF)</CardDescription>
+                            <CardDescription className="font-mono text-xs">Archivo PDF de tu currículum</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                            <div className={`border-2 border-dashed rounded-xl p-10 flex flex-col items-center justify-center text-center transition-all cursor-pointer relative group ${error ? 'border-red-500/50 bg-red-500/5' : 'border-border hover:border-primary/50 hover:bg-muted/30'}`}>
+                            <div className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center transition-all cursor-pointer relative group ${error ? 'border-red-500/50 bg-red-500/5' : 'border-border hover:border-primary/50 hover:bg-muted/30'}`}>
                                 <input
                                     type="file"
                                     accept=".pdf"
                                     onChange={handleFileChange}
                                     className="absolute inset-0 opacity-0 cursor-pointer z-10"
                                 />
-                                <div className="h-14 w-14 bg-secondary rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                                    {file ? <FileText className="h-7 w-7 text-primary" /> : <Upload className="h-7 w-7 text-muted-foreground" />}
+                                <div className="h-12 w-12 bg-secondary rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                                    {file ? <FileText className="h-6 w-6 text-primary" /> : <Upload className="h-6 w-6 text-muted-foreground" />}
                                 </div>
 
                                 {file ? (
@@ -119,10 +159,8 @@ export default function CheckerPage() {
                                     </div>
                                 ) : (
                                     <>
-                                        <p className="text-lg font-medium text-foreground">
-                                            Drop artifact here
-                                        </p>
-                                        <p className="text-sm text-muted-foreground font-mono">or click to browse filesystem</p>
+                                        <p className="text-lg font-medium text-foreground">Arrastra tu CV aquí</p>
+                                        <p className="text-sm text-muted-foreground">o haz clic para seleccionar</p>
                                     </>
                                 )}
                             </div>
@@ -143,87 +181,132 @@ export default function CheckerPage() {
                                     className="w-4 h-4 text-primary rounded focus:ring-primary border-muted-foreground/30 bg-background"
                                 />
                                 <label htmlFor="ai-mode" className="flex-1 text-sm font-medium text-foreground cursor-pointer select-none flex items-center justify-between">
-                                    <span>Enable Gemini Core Analysis</span>
+                                    <span>Análisis con IA (Gemini)</span>
                                     <span className="flex items-center gap-1 text-xs bg-primary/20 text-primary px-2 py-0.5 rounded font-mono">
-                                        <Zap className="h-3 w-3" /> PREMIUM
+                                        <Zap className="h-3 w-3" /> PRO
                                     </span>
                                 </label>
                             </div>
 
                             <Button
-                                className={`w-full h-12 text-lg font-mono tracking-wide shadow-lg ${useAI ? 'bg-primary hover:bg-primary/90' : 'bg-primary hover:bg-primary/90'}`}
+                                className="w-full h-12 text-lg font-mono tracking-wide shadow-lg bg-primary hover:bg-primary/90"
                                 disabled={!file || loading}
                                 onClick={handleAnalyze}
                             >
                                 {loading ? (
                                     <>
-                                        <Loader2 className="mr-2 h-5 w-5 animate-spin" /> PROCESSING...
+                                        <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Analizando...
                                     </>
                                 ) : (
-                                    useAI ? "> RUN DEEP_SCAN" : "> RUN QUICK_CHECK"
+                                    "Analizar CV"
                                 )}
                             </Button>
                         </CardContent>
                     </Card>
 
                     {/* Results Area */}
-                    <div className="lg:col-span-1">
+                    <div>
                         {result ? (
-                            <Card className="w-full h-full border-primary/20 bg-black/40 backdrop-blur shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-bottom-4">
-                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
+                            <Card className="w-full border-primary/20 bg-card/80 backdrop-blur shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4">
                                 <CardHeader className="bg-secondary/50 border-b border-border">
                                     <CardTitle className="font-mono text-sm uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                                        <Terminal className="h-3 w-3" /> Output_Log
+                                        <Terminal className="h-3 w-3" /> Resultados del Análisis
                                     </CardTitle>
                                 </CardHeader>
-                                <CardContent className="p-6 space-y-6 font-mono text-sm">
-                                    <div className="flex justify-between items-end border-b border-border pb-4">
-                                        <span className="text-muted-foreground">COMPATIBILITY:</span>
-                                        <span className={`text-4xl font-bold ${result.score >= 80 ? 'text-green-500' : result.score >= 50 ? 'text-yellow-500' : 'text-red-500'}`}>
+                                <CardContent className="p-6 space-y-5">
+                                    {/* Score */}
+                                    <div className="text-center py-4 border-b border-border">
+                                        <p className="text-xs text-muted-foreground uppercase mb-2">Compatibilidad ATS Estimada</p>
+                                        <span className={`text-6xl font-bold ${result.score >= 80 ? 'text-green-500' : result.score >= 50 ? 'text-yellow-500' : 'text-red-500'}`}>
                                             {result.score}%
                                         </span>
                                     </div>
 
-                                    <div className="space-y-4">
+                                    {/* Metrics */}
+                                    {result.metrics && (
+                                        <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                                            <div className="bg-muted/30 p-3 rounded-lg">
+                                                <p className="text-muted-foreground">Palabras</p>
+                                                <p className="text-lg font-bold text-foreground">{result.metrics.word_count}</p>
+                                            </div>
+                                            <div className="bg-muted/30 p-3 rounded-lg">
+                                                <p className="text-muted-foreground">Viñetas</p>
+                                                <p className="text-lg font-bold text-foreground">{result.metrics.bullet_count}</p>
+                                            </div>
+                                            <div className="bg-muted/30 p-3 rounded-lg">
+                                                <p className="text-muted-foreground">Legibilidad</p>
+                                                <p className="text-lg font-bold text-foreground">{result.metrics.readability_score}/100</p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Collapsible Sections */}
+                                    <div className="space-y-3">
+                                        {result.issues && result.issues.length > 0 && (
+                                            <CollapsibleSection
+                                                title="Qué Revisar"
+                                                icon={AlertTriangle}
+                                                items={result.issues}
+                                                variant="warning"
+                                            />
+                                        )}
+
+                                        {result.improvements && result.improvements.length > 0 && (
+                                            <CollapsibleSection
+                                                title="Cómo Mejorarlo"
+                                                icon={Lightbulb}
+                                                items={result.improvements}
+                                            />
+                                        )}
+
+                                        {result.strengths && result.strengths.length > 0 && (
+                                            <CollapsibleSection
+                                                title="Lo Que Está Bien"
+                                                icon={CheckCircle}
+                                                items={result.strengths}
+                                                variant="success"
+                                            />
+                                        )}
+                                    </div>
+
+                                    {/* Sections Found */}
+                                    {result.sections_found && result.sections_found.length > 0 && (
                                         <div>
-                                            <h4 className="text-xs text-muted-foreground uppercase mb-2">Detected Modules</h4>
+                                            <p className="text-xs text-muted-foreground uppercase mb-2">Secciones Detectadas</p>
                                             <div className="flex flex-wrap gap-2">
-                                                {(result.sections_found || result.strengths || []).map((sec: string) => (
-                                                    <span key={sec} className="px-2 py-1 bg-green-500/10 text-green-500 border border-green-500/20 rounded text-xs flex items-center gap-1">
+                                                {result.sections_found.map((sec: string) => (
+                                                    <span key={sec} className="px-2 py-1 bg-primary/10 text-primary border border-primary/20 rounded text-xs flex items-center gap-1">
                                                         <CheckCircle className="h-3 w-3" /> {sec}
                                                     </span>
                                                 ))}
                                             </div>
                                         </div>
+                                    )}
 
-                                        {result.weaknesses && (
-                                            <div>
-                                                <h4 className="text-xs text-muted-foreground uppercase mb-2 text-red-400">Critical Errors</h4>
-                                                <ul className="space-y-2">
-                                                    {result.weaknesses.map((weak: string) => (
-                                                        <li key={weak} className="flex items-start gap-2 text-xs text-red-300">
-                                                            <span className="mt-0.5">✖</span> {weak}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        )}
-
-                                        <div className="bg-secondary/50 p-3 rounded border border-border">
-                                            <h4 className="text-xs text-primary uppercase mb-1">System Summary</h4>
-                                            <p className="text-xs text-muted-foreground leading-relaxed">
-                                                {result.summary}
-                                            </p>
-                                        </div>
+                                    {/* Summary */}
+                                    <div className="bg-secondary/50 p-4 rounded-lg border border-border">
+                                        <p className="text-xs text-primary uppercase mb-1 font-semibold">Resumen</p>
+                                        <p className="text-sm text-muted-foreground leading-relaxed">
+                                            {result.summary}
+                                        </p>
                                     </div>
+
+                                    {/* CTA */}
+                                    <Button
+                                        variant="outline"
+                                        className="w-full font-mono"
+                                        onClick={() => router.push('/dashboard')}
+                                    >
+                                        <TrendingUp className="mr-2 h-4 w-4" /> Crear CV Optimizado
+                                    </Button>
                                 </CardContent>
                             </Card>
                         ) : (
-                            <div className="h-full border-2 border-dashed border-border/50 rounded-xl flex items-center justify-center p-8 text-center bg-card/20 min-h-[300px]">
+                            <div className="h-full border-2 border-dashed border-border/50 rounded-xl flex items-center justify-center p-8 text-center bg-card/20 min-h-[400px]">
                                 <div className="space-y-2 text-muted-foreground/40 font-mono text-sm">
                                     <Terminal className="h-8 w-8 mx-auto mb-2" />
-                                    <p>Waiting for input stream...</p>
-                                    <p className="text-xs">Results will render here.</p>
+                                    <p>Esperando archivo...</p>
+                                    <p className="text-xs">Los resultados aparecerán aquí.</p>
                                 </div>
                             </div>
                         )}
