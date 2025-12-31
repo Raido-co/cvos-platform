@@ -31,8 +31,11 @@ export default function CheckerPage() {
         formData.append("file", file)
 
         try {
-            // Robust URL construction
-            let baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+            // Robust URL construction with production fallback
+            let baseUrl = process.env.NEXT_PUBLIC_API_URL
+                || (typeof window !== 'undefined' && window.location.hostname !== 'localhost'
+                    ? "https://cvos-platform-production.up.railway.app"
+                    : "http://localhost:8000")
             // Remove trailing slash if present
             if (baseUrl.endsWith('/')) {
                 baseUrl = baseUrl.slice(0, -1)
