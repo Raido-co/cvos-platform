@@ -8,8 +8,11 @@ import { useLanguage } from "@/components/language-provider"
 export default function Home() {
   const { t, locale, setLocale } = useLanguage()
 
-  const toggleLanguage = () => {
-    setLocale(locale === 'en' ? 'es' : 'en')
+  const cycleLanguage = () => {
+    const order = ['es', 'en', 'ru'] as const
+    const currentIdx = order.indexOf(locale)
+    const nextIdx = (currentIdx + 1) % order.length
+    setLocale(order[nextIdx])
   }
 
   return (
@@ -25,7 +28,7 @@ export default function Home() {
           <Link href="/dashboard" className="hover:text-primary transition-colors duration-200">{t("nav.dashboard")}</Link>
         </nav>
         <div className="ml-auto flex gap-2 md:gap-4 items-center">
-          <Button variant="ghost" size="sm" onClick={toggleLanguage} className="font-mono text-xs px-2">
+          <Button variant="ghost" size="sm" onClick={cycleLanguage} className="font-mono text-xs px-2">
             <Globe className="mr-1 md:mr-2 h-3 w-3" />
             {locale.toUpperCase()}
           </Button>
