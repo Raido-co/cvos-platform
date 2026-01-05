@@ -10,8 +10,6 @@ type LanguageContextType = {
     t: (key: string) => string
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
-
 const translations: Record<Locale, Record<string, string>> = {
     en: {
         // Navigation
@@ -63,6 +61,16 @@ const translations: Record<Locale, Record<string, string>> = {
     }
 }
 
+// Default context values for SSG/SSR
+const defaultLocale: Locale = 'es'
+const defaultT = (key: string): string => translations[defaultLocale][key] || key
+
+const LanguageContext = createContext<LanguageContextType>({
+    locale: defaultLocale,
+    setLocale: () => { },
+    t: defaultT
+})
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
     const [locale, setLocaleState] = useState<Locale>('es')
     const [isHydrated, setIsHydrated] = useState(false)
@@ -93,22 +101,19 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         return translations[locale][key] || key
     }
 
-    // Prevent hydration mismatch
-    if (!isHydrated) {
-        return <>{children}</>
-    }
+    // Always provide context, use default locale before hydration
+    const value = isHydrated
+        ? { locale, setLocale, t }
+        : { locale: defaultLocale, setLocale: () => { }, t: defaultT }
 
     return (
-        <LanguageContext.Provider value={{ locale, setLocale, t }}>
+        <LanguageContext.Provider value={value}>
             {children}
         </LanguageContext.Provider>
     )
 }
 
 export function useLanguage() {
-    const context = useContext(LanguageContext)
-    if (context === undefined) {
-        throw new Error("useLanguage must be used within a LanguageProvider")
-    }
-    return context
+    return useContext(LanguageContext)
 }
+
