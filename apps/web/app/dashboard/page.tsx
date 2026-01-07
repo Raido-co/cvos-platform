@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Terminal, ArrowLeft, ArrowRight, Plus, Trash2, Check, Download, ChevronRight, Briefcase, GraduationCap, Award, User as UserIcon } from "lucide-react"
+import { useLanguage } from "@/components/language-provider"
+import { LanguageSelector } from "@/components/language-selector"
 
 // Types
 type Education = {
@@ -512,7 +514,8 @@ export default function DashboardPage() {
                         </div>
                     ))}
                 </div>
-                <div className="mt-auto p-4 border-t border-sidebar-border">
+                <div className="mt-auto p-4 border-t border-sidebar-border space-y-2">
+                    <LanguageSelector />
                     <Button variant="ghost" className="w-full justify-start text-muted-foreground" onClick={() => router.push('/')}>
                         <ArrowLeft className="mr-2 h-4 w-4" /> Exit
                     </Button>

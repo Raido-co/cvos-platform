@@ -2,18 +2,12 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, FileCheck, Layout, Cpu, Globe, CheckCircle, AlertTriangle, Sparkles } from "lucide-react"
+import { ArrowRight, FileCheck, Layout, Cpu, CheckCircle, AlertTriangle, Sparkles } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
+import { LanguageSelector } from "@/components/language-selector"
 
 export default function Home() {
-  const { t, locale, setLocale } = useLanguage()
-
-  const cycleLanguage = () => {
-    const order = ['es', 'en', 'ru'] as const
-    const currentIdx = order.indexOf(locale)
-    const nextIdx = (currentIdx + 1) % order.length
-    setLocale(order[nextIdx])
-  }
+  const { t, locale } = useLanguage()
 
   return (
     <div className="flex flex-col min-h-screen font-sans selection:bg-primary/20 selection:text-primary">
@@ -28,10 +22,7 @@ export default function Home() {
           <Link href="/dashboard" className="hover:text-primary transition-colors duration-200">{t("nav.dashboard")}</Link>
         </nav>
         <div className="ml-auto flex gap-2 md:gap-4 items-center">
-          <Button variant="ghost" size="sm" onClick={cycleLanguage} className="font-mono text-xs px-2">
-            <Globe className="mr-1 md:mr-2 h-3 w-3" />
-            {locale.toUpperCase()}
-          </Button>
+          <LanguageSelector />
 
           <Link href="/checker" className="hidden md:block">
             <Button className="font-mono bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20">
