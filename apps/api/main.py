@@ -56,12 +56,12 @@ def debug_info():
     import inspect
     from pdf_generator import PDFGenerator
     
-    # Get the generate_cv method source to verify correct version
     gen = PDFGenerator()
     method_source = inspect.getsource(gen.generate_cv)
     
     return {
         "api_version": API_VERSION,
+        "pdf_generator_version": PDFGenerator.VERSION,
         "weasyprint_version": weasyprint.__version__,
         "pdf_generator_uses_write_pdf_bytes": "pdf_bytes = html_doc.write_pdf()" in method_source,
         "method_source_preview": method_source[:500]
