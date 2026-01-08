@@ -1,4 +1,4 @@
-name: OpenATS CI
+name: cvOS CI
 
 on:
   push:
@@ -30,16 +30,42 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    
     - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
         python-version: "3.11"
-    - name: Install Dependencies
+    
+    - name: Install System Dependencies (WeasyPrint)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev
+    
+    - name: Install Python Dependencies
       run: |
         cd apps/api
         pip install -r requirements.txt
-    - name: Run Tests
-      # Idealmente aquí correrías pytest. Por ahora solo verificamos syntax checking.
+        pip install pytest
+    
+    - name: Syntax Check
       run: |
         cd apps/api
         python -m compileall .
+    
+    - name: Run Tests
+      run: |
+        cd apps/api
+        python -m pytest test_api.py -v --tb=short
+    
+    - name: Verify PDF Generation
+      run: |
+        cd apps/api
+        python -c "
+from pdf_generator import PDFGenerator
+gen = PDFGenerator()
+data = {'fullName': 'CI Test', 'title': 'Tester', 'email': 'ci@test.com', 'summary': 'Test', 'experience': [], 'education': [], 'skills': 'Testing', 'languages': 'English', 'certifications': []}
+gen.generate_cv(data, '/tmp/ci_test.pdf')
+import os
+assert os.path.exists('/tmp/ci_test.pdf'), 'PDF not created'
+print('✅ PDF Generation Test PASSED')
+"

@@ -5,16 +5,22 @@ from fastapi.middleware.cors import CORSMiddleware
 import shutil
 import json
 import os
+from datetime import datetime
 
-app = FastAPI(title="cvOS API", version="1.0.0")
+# Version tracking - update this on each deployment
+API_VERSION = "2.1.0"
+DEPLOY_DATE = "2026-01-08"
+
+app = FastAPI(title="cvOS API", version=API_VERSION)
 
 # Configurar CORS para permitir peticiones desde el frontend (Vercel)
 origins = [
     "http://localhost:3000",
     "https://cv.raido.com.co",
-    "https://cvos.raido.com.co", # Correct production domain
-    "https://cvos-platform.vercel.app", # Vercel default
+    "https://cvos.raido.com.co",
+    "https://cvos-platform.vercel.app",
     "https://cv-raido.com.co",
+    "*"  # Allow all for debugging
 ]
 
 app.add_middleware(
@@ -27,7 +33,21 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    return {"status": "ok", "service": "cvOS Backend"}
+    return {
+        "status": "ok", 
+        "service": "cvOS Backend",
+        "version": API_VERSION,
+        "deploy_date": DEPLOY_DATE
+    }
+
+@app.get("/health")
+def health_check():
+    """Health check endpoint for Railway/monitoring."""
+    return {
+        "status": "healthy",
+        "version": API_VERSION,
+        "timestamp": datetime.utcnow().isoformat()
+    }
 
 @app.post("/analyze")
 async def analyze_cv(file: UploadFile = File(...)):
