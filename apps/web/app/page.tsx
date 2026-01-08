@@ -136,10 +136,10 @@ export default function Home() {
       </main>
 
       <footer className="py-6 border-t border-border bg-muted/20">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
-          <span>© 2024 cvOS Platform.</span>
-          <a href="https://raido.com.co" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
-            Powered by <span className="font-semibold">RAIDO</span>
+        <div className="container mx-auto px-6 text-center text-xs text-muted-foreground font-mono">
+          cvOS © 2026 — Powered by{' '}
+          <a href="https://raido.com.co" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+            Raido
           </a>
         </div>
       </footer>
