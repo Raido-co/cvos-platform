@@ -2,29 +2,30 @@ name: cvOS CI
 
 on:
   push:
-    branches: [ "main", "master", "feature/*" ]
+    branches: [ "main", "develop", "feature/*" ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "main", "develop" ]
 
 jobs:
   build-frontend:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'npm'
         cache-dependency-path: apps/web/package-lock.json
+    
     - name: Install Dependencies
-      run: |
-        cd apps/web
-        npm ci
+      run: npm ci
+      working-directory: apps/web
+    
     - name: Build Frontend
-      run: |
-        cd apps/web
-        npm run build
+      run: npm run build
+      working-directory: apps/web
 
   test-backend:
     runs-on: ubuntu-latest
@@ -42,41 +43,17 @@ jobs:
         sudo apt-get install -y libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev
     
     - name: Install Python Dependencies
-      run: |
-        cd apps/api
-        pip install -r requirements.txt
-        pip install pytest
+      run: pip install -r requirements.txt pytest
+      working-directory: apps/api
     
     - name: Syntax Check
-      run: |
-        cd apps/api
-        python -m compileall .
+      run: python -m compileall .
+      working-directory: apps/api
     
-    - name: Run Tests
-      run: |
-        cd apps/api
-        python -m pytest test_api.py -v --tb=short || echo "Tests completed"
+    - name: Run Unit Tests
+      run: python -m pytest test_api.py -v --tb=short || true
+      working-directory: apps/api
     
     - name: Verify PDF Generation
-      run: |
-        cd apps/api
-        python << 'EOF'
-from pdf_generator import PDFGenerator
-import os
-
-gen = PDFGenerator()
-data = {
-    'fullName': 'CI Test',
-    'title': 'Tester',
-    'email': 'ci@test.com',
-    'summary': 'Test summary',
-    'experience': [],
-    'education': [],
-    'skills': 'Testing',
-    'languages': 'English',
-    'certifications': []
-}
-gen.generate_cv(data, '/tmp/ci_test.pdf')
-assert os.path.exists('/tmp/ci_test.pdf'), 'PDF not created'
-print('✅ PDF Generation Test PASSED')
-EOF
+      run: python ci_test_pdf.py
+      working-directory: apps/api

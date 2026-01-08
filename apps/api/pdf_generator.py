@@ -1,59 +1,73 @@
 """
 PDF Generator for cvOS
-Version: 2.1.0 (2026-01-08)
-Uses WeasyPrint 60+ API with write_pdf() returning bytes
+Version: 2.2.0 (2026-01-08)
+Supports multiple templates: classic (free), modern (pro), executive (business)
 """
 from weasyprint import HTML
 from jinja2 import Environment, FileSystemLoader
 import os
 import logging
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("pdf_generator")
+
+# Available templates with their tier requirements
+TEMPLATES = {
+    "classic": {"file": "cv_classic.html", "tier": "free", "name": "Classic"},
+    "modern": {"file": "cv_modern.html", "tier": "pro", "name": "Modern"},
+    "executive": {"file": "cv_executive.html", "tier": "business", "name": "Executive"}
+}
 
 class PDFGenerator:
     """Generate CV PDFs from structured data using WeasyPrint."""
     
-    VERSION = "2.1.0"
+    VERSION = "2.2.0"
     
     def __init__(self, template_dir: str = "templates"):
         logger.info(f"Initializing PDFGenerator v{self.VERSION}")
         base_dir = os.path.dirname(os.path.abspath(__file__))
         template_path = os.path.join(base_dir, template_dir)
-        logger.info(f"Template path: {template_path}")
         self.env = Environment(loader=FileSystemLoader(template_path))
+        self.template_path = template_path
 
-    def generate_cv(self, data: dict, output_path: str) -> str:
+    def get_available_templates(self) -> dict:
+        """Return dict of available templates with metadata."""
+        return TEMPLATES
+
+    def generate_cv(self, data: dict, output_path: str, template: str = "classic") -> str:
         """
-        Genera un PDF basado en data y el template 'cv_template.html'.
-        Compatible con WeasyPrint 60+
+        Generate PDF from CV data using specified template.
         
         Args:
             data: Dictionary with CV fields (fullName, title, etc.)
             output_path: Path to save the generated PDF
+            template: Template name ('classic', 'modern', 'executive')
             
         Returns:
             The output_path on success
         """
-        logger.info(f"Generating CV for: {data.get('fullName', 'unknown')}")
+        # Validate template
+        if template not in TEMPLATES:
+            logger.warning(f"Unknown template '{template}', falling back to 'classic'")
+            template = "classic"
+        
+        template_info = TEMPLATES[template]
+        template_file = template_info["file"]
+        
+        logger.info(f"Generating CV for: {data.get('fullName', 'unknown')} using template: {template}")
         
         # Render HTML template
-        template = self.env.get_template("cv_template.html")
-        html_content = template.render(data=data)
-        logger.info("Template rendered successfully")
+        tpl = self.env.get_template(template_file)
+        html_content = tpl.render(data=data)
+        logger.info(f"Template '{template_file}' rendered successfully")
         
-        # Generate PDF using WeasyPrint 60+ API
-        # write_pdf() without arguments returns bytes
-        logger.info("Creating HTML document...")
-        html_doc = HTML(string=html_content)
-        
-        logger.info("Generating PDF bytes...")
-        pdf_bytes = html_doc.write_pdf()  # Returns bytes in WeasyPrint 60+
+        # Generate PDF
+        html_doc = HTML(string=html_content, base_url=self.template_path)
+        pdf_bytes = html_doc.write_pdf()
         
         logger.info(f"PDF generated: {len(pdf_bytes)} bytes")
         
-        # Write bytes to file
+        # Write to file
         with open(output_path, 'wb') as f:
             f.write(pdf_bytes)
         
@@ -61,9 +75,10 @@ class PDFGenerator:
         return output_path
 
 
-# Quick self-test
 if __name__ == "__main__":
     print(f"PDFGenerator Version: {PDFGenerator.VERSION}")
+    print(f"Available templates: {list(TEMPLATES.keys())}")
+    
     gen = PDFGenerator()
     test_data = {
         "fullName": "Test User",
@@ -72,9 +87,13 @@ if __name__ == "__main__":
         "summary": "Test summary",
         "experience": [],
         "education": [],
-        "skills": "Python",
-        "languages": "English",
+        "skills": "Python, JavaScript",
+        "languages": "English, Spanish",
         "certifications": []
     }
-    gen.generate_cv(test_data, "/tmp/self_test.pdf")
-    print("Self-test passed!")
+    
+    # Test each template
+    for template_name in TEMPLATES.keys():
+        output_file = f"/tmp/test_{template_name}.pdf"
+        gen.generate_cv(test_data, output_file, template=template_name)
+        print(f"✅ Generated: {output_file}")

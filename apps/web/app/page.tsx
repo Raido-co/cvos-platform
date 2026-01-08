@@ -20,6 +20,7 @@ export default function Home() {
         <nav className="flex gap-6 text-sm font-medium text-muted-foreground hidden md:flex">
           <Link href="/checker" className="hover:text-primary transition-colors duration-200">{t("nav.checking")}</Link>
           <Link href="/dashboard" className="hover:text-primary transition-colors duration-200">{t("nav.dashboard")}</Link>
+          <Link href="/pricing" className="hover:text-primary transition-colors duration-200">{t("nav.pricing")}</Link>
         </nav>
         <div className="ml-auto flex gap-2 md:gap-4 items-center">
           <LanguageSelector />
