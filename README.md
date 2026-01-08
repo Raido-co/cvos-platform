@@ -74,7 +74,7 @@ flowchart TB
 ## Git Flow
 
 ```mermaid
-gitgraph
+gitGraph
     commit id: "v1.0.0" tag: "prod"
     branch develop
     commit id: "setup"
