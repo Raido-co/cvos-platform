@@ -1,77 +1,120 @@
-# cvOS: ATS Analysis & Professional CV Generation Platform
+# 🚀 cvOS - ATS CV Optimizer
 
-cvOS is a high-performance, open-source platform designed to optimize the job application process. It leverages heuristic analysis and Large Language Models (LLMs) to ensure CV compatibility with modern Applicant Tracking Systems (ATS).
+> **Supera los filtros ATS. Consigue más entrevistas.**  
+> Un producto de **Raido 2026**
 
-## Project Overview
+[![CI Status](https://github.com/Raido-co/cvos-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/Raido-co/cvos-platform/actions)
 
-The platform provides a comprehensive suite of tools for candidates to analyze, optimize, and generate professional resumes. By utilizing a modular monorepo architecture, cvOS separates concerns between the rendering engine, the analytical backend, and the interactive frontend.
+## 🌐 Demo
 
-## Core Features
+- **Production:** [cvos.raido.com.co](https://cvos.raido.com.co)
+- **API:** [cvos-platform-production.up.railway.app](https://cvos-platform-production.up.railway.app)
 
-### 1. ATS Compliance Engine
-- **Heuristic Section Detection**: Implements automated parsing of PDF documents to identify standard resume components (Work Experience, Education, Technical Skills, etc.).
-- **Readability Scoring**: Evaluates document parseability to ensure compatibility with automated recruitment software.
+---
 
-### 2. LLM-Powered Analysis (Gemini Pro)
-- **Deep Semantic Analysis**: Integration with Google Generative AI for qualitative feedback on professional experience and skill alignment.
-- **Optimization Reporting**: Detailed feedback on strengths, critical weaknesses, and recommended keyphrase injections.
+## 📊 Arquitectura
 
-### 3. Professional PDF Generation
-- **WeasyPrint Engine**: Server-side PDF rendering using HTML5/CSS3 templates for pixel-perfect, ATS-parseable exports.
-- **Jinja2 Templating**: Dynamic content injection into standardized, recruiter-approved layouts.
-
-## Technical Architecture
-
-The project follows a Monorepo structure for consolidated management of both frontend and backend services:
-
-- **Frontend (`/apps/web`)**: 
-  - Framework: Next.js 15 (App Router)
-  - UI: TailwindCSS + Shadcn/ui
-  - Deployment: Optimized for Vercel Edge Network
-- **Backend (`/apps/api`)**:
-  - Framework: FastAPI (Python 3.11)
-  - Processing: PyMuPDF (Text Extraction) and WeasyPrint (PDF Generation)
-  - AI Service: Google Generative AI (Gemini Pro)
-  - Deployment: Containerized via Docker for Railway.app
-
-## Infrastructure & CI/CD
-
-- **GitHub Actions**: Automated CI pipeline for build verification and syntax validation.
-- **Environment Management**: Decoupled configuration via environment variables for security and scalability.
-
-## Local Development
-
-### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- Google Generative AI API Key
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/Raido-co/cvos-platform.git
-cd cvos-platform
+```mermaid
+flowchart TB
+    subgraph Frontend["Frontend (Vercel)"]
+        A[Next.js 16 + React 19]
+        A --> B[Landing]
+        A --> C[ATS Checker]
+        A --> D[CV Dashboard]
+        A --> E[Pricing]
+    end
+    
+    subgraph Backend["Backend (Railway)"]
+        F[FastAPI]
+        F --> G[PDF Generator]
+        F --> H[ATS Analyzer]
+        F --> I[Gemini AI]
+    end
+    
+    C & D --> F
 ```
 
-2. Initialize Backend Service:
-```bash
-cd apps/api
-pip install -r requirements.txt
-# Set GOOGLE_API_KEY environment variable
-uvicorn main:app --reload
-```
+## 🛠️ Tech Stack
 
-3. Initialize Frontend Service:
+| Layer | Technology |
+|-------|------------|
+| Frontend | Next.js 16, React 19, TailwindCSS 4 |
+| Backend | FastAPI, Python 3.11 |
+| PDF Engine | WeasyPrint 67 |
+| AI | Google Gemini API |
+| Hosting | Vercel (FE) + Railway (BE) |
+| CI/CD | GitHub Actions |
+
+## 🚀 Quick Start
+
+### Frontend
 ```bash
 cd apps/web
 npm install
 npm run dev
 ```
 
-## Documentation
+### Backend
+```bash
+cd apps/api
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
 
-For comprehensive deployment instructions including DNS configuration and platform settings, refer to the [Deployment Guide (DEPLOYMENT.md)](./DEPLOYMENT.md).
+## 🌿 Git Flow
 
-## License & Maintenance
-Managed by the **[Raido](https://github.com/Raido-co)** organization.
+See [GIT_FLOW.md](./GIT_FLOW.md) for branching strategy.
+
+```
+main (production) ← develop ← feature/*
+```
+
+## 📁 Project Structure
+
+```
+apps/
+├── web/                    # Next.js Frontend
+│   ├── app/
+│   │   ├── page.tsx        # Landing
+│   │   ├── checker/        # ATS Checker
+│   │   ├── dashboard/      # CV Wizard
+│   │   ├── pricing/        # Plans
+│   │   └── login/          # Auth
+│   └── components/
+│
+└── api/                    # FastAPI Backend
+    ├── main.py             # API Routes
+    ├── pdf_generator.py    # CV PDF Generation
+    ├── ats_checker.py      # ATS Analysis
+    └── templates/          # CV HTML Templates
+        ├── cv_classic.html
+        ├── cv_modern.html
+        └── cv_executive.html
+```
+
+## 💰 Pricing Tiers
+
+| Plan | Price | Features |
+|------|-------|----------|
+| Free | $0 | 3 CVs/month, Classic template |
+| Pro | $3/mo | Unlimited CVs, 5+ templates, AI |
+| Business | $10/mo | All Pro + API access |
+
+## 🔜 Roadmap
+
+- [ ] Authentication (NextAuth + OAuth)
+- [ ] Payment integration (Stripe)
+- [ ] Template selector in Dashboard
+- [ ] Live CV preview
+- [ ] Form validation
+
+## 👥 Team
+
+**Raido 2026**
+- Will - Lead Developer
+- Santi - Security Engineer
+- Edgar - Developer
+
+---
+
+*cvOS © 2026 — Powered by [Raido](https://raido.com.co)*
