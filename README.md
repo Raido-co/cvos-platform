@@ -1,51 +1,120 @@
-# 🚀 cvOS - ATS CV Optimizer
+# cvOS - ATS CV Optimizer
 
 > **Supera los filtros ATS. Consigue más entrevistas.**  
 > Un producto de **Raido 2026**
 
 [![CI Status](https://github.com/Raido-co/cvos-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/Raido-co/cvos-platform/actions)
 
-## 🌐 Demo
+## Demo
 
-- **Production:** [cvos.raido.com.co](https://cvos.raido.com.co)
-- **API:** [cvos-platform-production.up.railway.app](https://cvos-platform-production.up.railway.app)
+| Ambiente | URL |
+|----------|-----|
+| Production | [cvos.raido.com.co](https://cvos.raido.com.co) |
+| API | [cvos-platform-production.up.railway.app](https://cvos-platform-production.up.railway.app) |
 
 ---
 
-## 📊 Arquitectura
+## Contenido
+
+1. [Arquitectura](#arquitectura)
+2. [Stack Tecnológico](#stack-tecnológico)
+3. [Git Flow](#git-flow)
+4. [CI/CD](#cicd)
+5. [Quick Start](#quick-start)
+6. [Equipo](#equipo)
+
+---
+
+## Arquitectura
 
 ```mermaid
 flowchart TB
-    subgraph Frontend["Frontend (Vercel)"]
-        A[Next.js 16 + React 19]
-        A --> B[Landing]
-        A --> C[ATS Checker]
-        A --> D[CV Dashboard]
-        A --> E[Pricing]
+    subgraph Client["Cliente"]
+        U[Usuario]
     end
     
-    subgraph Backend["Backend (Railway)"]
-        F[FastAPI]
-        F --> G[PDF Generator]
-        F --> H[ATS Analyzer]
-        F --> I[Gemini AI]
+    subgraph Frontend["Frontend - Vercel"]
+        NX[Next.js 16]
+        NX --> R[React 19]
+        NX --> TW[TailwindCSS 4]
     end
     
-    C & D --> F
+    subgraph Backend["Backend - Railway"]
+        FA[FastAPI]
+        FA --> PDF[PDF Generator]
+        FA --> ATS[ATS Analyzer]
+        FA --> AI[Gemini AI]
+    end
+    
+    U --> NX
+    NX -->|REST API| FA
+    
+    style Frontend fill:#0ea5e9,color:#fff
+    style Backend fill:#8b5cf6,color:#fff
 ```
 
-## 🛠️ Tech Stack
+---
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | Next.js 16, React 19, TailwindCSS 4 |
-| Backend | FastAPI, Python 3.11 |
-| PDF Engine | WeasyPrint 67 |
-| AI | Google Gemini API |
-| Hosting | Vercel (FE) + Railway (BE) |
-| CI/CD | GitHub Actions |
+## Stack Tecnológico
 
-## 🚀 Quick Start
+| Categoría | Tecnología | Versión |
+|-----------|------------|---------|
+| Frontend | Next.js | 16.1 |
+| Frontend | React | 19.2 |
+| Frontend | TailwindCSS | 4.0 |
+| Backend | Python | 3.11 |
+| Backend | FastAPI | 0.109 |
+| Backend | WeasyPrint | 67.0 |
+| AI | Google Gemini | API |
+| Hosting FE | Vercel | - |
+| Hosting BE | Railway | - |
+
+---
+
+## Git Flow
+
+```mermaid
+gitgraph
+    commit id: "v1.0.0" tag: "prod"
+    branch develop
+    commit id: "setup"
+    branch feature/auth
+    commit id: "login"
+    checkout develop
+    merge feature/auth
+    checkout main
+    merge develop tag: "v1.1.0"
+```
+
+| Branch | Propósito | Deploy |
+|--------|-----------|--------|
+| `main` | Producción | Vercel Prod + Railway |
+| `develop` | Integración | Vercel Preview |
+| `feature/*` | Nuevas features | Vercel Preview |
+
+---
+
+## CI/CD
+
+```mermaid
+flowchart LR
+    A[Push/PR] --> B[GitHub Actions]
+    B --> C[Build Frontend]
+    B --> D[Test Backend]
+    C --> E[Vercel Deploy]
+    D --> F[Railway Deploy]
+    
+    style B fill:#22c55e,color:#fff
+```
+
+| Job | Steps |
+|-----|-------|
+| `build-frontend` | checkout, npm ci, npm build |
+| `test-backend` | pip install, pytest, pdf generation test |
+
+---
+
+## Quick Start
 
 ### Frontend
 ```bash
@@ -61,60 +130,41 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-## 🌿 Git Flow
+---
 
-See [GIT_FLOW.md](./GIT_FLOW.md) for branching strategy.
-
-```
-main (production) ← develop ← feature/*
-```
-
-## 📁 Project Structure
+## Estructura del Proyecto
 
 ```
 apps/
-├── web/                    # Next.js Frontend
+├── web/                    # Frontend Next.js
 │   ├── app/
 │   │   ├── page.tsx        # Landing
 │   │   ├── checker/        # ATS Checker
 │   │   ├── dashboard/      # CV Wizard
-│   │   ├── pricing/        # Plans
+│   │   ├── pricing/        # Planes
 │   │   └── login/          # Auth
 │   └── components/
 │
-└── api/                    # FastAPI Backend
-    ├── main.py             # API Routes
-    ├── pdf_generator.py    # CV PDF Generation
-    ├── ats_checker.py      # ATS Analysis
-    └── templates/          # CV HTML Templates
+└── api/                    # Backend FastAPI
+    ├── main.py
+    ├── pdf_generator.py
+    ├── ats_checker.py
+    └── templates/
         ├── cv_classic.html
         ├── cv_modern.html
         └── cv_executive.html
 ```
 
-## 💰 Pricing Tiers
+---
 
-| Plan | Price | Features |
-|------|-------|----------|
-| Free | $0 | 3 CVs/month, Classic template |
-| Pro | $3/mo | Unlimited CVs, 5+ templates, AI |
-| Business | $10/mo | All Pro + API access |
+## Equipo
 
-## 🔜 Roadmap
-
-- [ ] Authentication (NextAuth + OAuth)
-- [ ] Payment integration (Stripe)
-- [ ] Template selector in Dashboard
-- [ ] Live CV preview
-- [ ] Form validation
-
-## 👥 Team
-
-**Raido 2026**
-- Will - Lead Developer
-- Santi - Security Engineer
-- Edgar - Developer
+| Nombre | Rol |
+|--------|-----|
+| Will | DevSecOps |
+| Santi | Security Engineer |
+| Edgar | Developer |
 
 ---
 
-*cvOS © 2026 — Powered by [Raido](https://raido.com.co)*
+*cvOS © 2026 — Raido*
