@@ -1,11 +1,13 @@
 "use client"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Check, FileCheck, ArrowLeft, Sparkles, Crown, Building2 } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 import { LanguageSelector } from "@/components/language-selector"
+
 
 const plans = [
     {
@@ -123,6 +125,15 @@ const plans = [
 
 export default function PricingPage() {
     const { locale, t } = useLanguage()
+    const router = useRouter()
+
+    const handleSelectPlan = (planId: string) => {
+        if (planId === 'free') {
+            router.push('/dashboard')
+        } else {
+            router.push(`/login?plan=${planId}`)
+        }
+    }
 
     const titles = {
         es: { title: 'Planes y Precios', subtitle: 'Elige el plan perfecto para tu búsqueda de empleo' },
@@ -169,8 +180,8 @@ export default function PricingPage() {
                         <Card
                             key={plan.id}
                             className={`relative flex flex-col ${plan.popular
-                                    ? 'border-primary shadow-lg shadow-primary/20 scale-105'
-                                    : 'border-border/60'
+                                ? 'border-primary shadow-lg shadow-primary/20 scale-105'
+                                : 'border-border/60'
                                 }`}
                         >
                             {plan.popular && (
@@ -212,10 +223,11 @@ export default function PricingPage() {
                             <CardFooter>
                                 <Button
                                     className={`w-full font-mono ${plan.popular
-                                            ? 'bg-primary hover:bg-primary/90'
-                                            : 'bg-secondary hover:bg-secondary/80'
+                                        ? 'bg-primary hover:bg-primary/90'
+                                        : 'bg-secondary hover:bg-secondary/80'
                                         }`}
                                     variant={plan.popular ? 'default' : 'secondary'}
+                                    onClick={() => handleSelectPlan(plan.id)}
                                 >
                                     {plan.cta[locale as keyof typeof plan.cta] || plan.cta.en}
                                 </Button>
