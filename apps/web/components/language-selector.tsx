@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { useLanguage, Locale } from "@/components/language-provider"
 
 const languages = [
-    { code: 'es' as Locale, name: 'Español', flag: '🇪🇸' },
+    { code: 'es' as Locale, name: 'Español', flag: '🇨🇴' },
     { code: 'en' as Locale, name: 'English', flag: '🇺🇸' },
     { code: 'ru' as Locale, name: 'Русский', flag: '🇷🇺' }
 ]
