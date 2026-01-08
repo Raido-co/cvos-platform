@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ data.fullName }} - CV</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            color: #333;
+            line-height: 1.5;
+            font-size: 10pt;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 35%;
+            background: linear-gradient(180deg, #1e3a5f 0%, #2c5282 100%);
+            color: white;
+            padding: 30px 20px;
+        }
+
+        .main {
+            width: 65%;
+            padding: 30px;
+            background: #fff;
+        }
+
+        .photo-placeholder {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40pt;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .sidebar h1 {
+            font-size: 18pt;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .sidebar .title {
+            text-align: center;
+            font-size: 10pt;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+
+        .sidebar h3 {
+            font-size: 10pt;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 5px;
+            margin: 20px 0 10px 0;
+        }
+
+        .sidebar p,
+        .sidebar li {
+            font-size: 9pt;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            padding: 3px 0;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 9pt;
+        }
+
+        .main h2 {
+            font-size: 12pt;
+            color: #1e3a5f;
+            border-bottom: 2px solid #1e3a5f;
+            padding-bottom: 5px;
+            margin: 20px 0 15px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .main h2:first-child {
+            margin-top: 0;
+        }
+
+        .summary {
+            font-size: 10pt;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .item {
+            margin-bottom: 15px;
+            page-break-inside: avoid;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .item-title {
+            font-weight: bold;
+            font-size: 11pt;
+            color: #333;
+        }
+
+        .item-date {
+            font-size: 9pt;
+            color: #888;
+        }
+
+        .item-subtitle {
+            font-size: 10pt;
+            color: #1e3a5f;
+            font-weight: 500;
+        }
+
+        .item-location {
+            font-size: 9pt;
+            color: #999;
+        }
+
+        .item-desc {
+            margin-top: 5px;
+            font-size: 9pt;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: #e8f0f7;
+            color: #1e3a5f;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 8pt;
+            margin: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="photo-placeholder">
+            {{ data.fullName[0] if data.fullName else '?' }}
+        </div>
+        <h1>{{ data.fullName }}</h1>
+        <div class="title">{{ data.title }}</div>
+
+        <h3>📧 Contacto</h3>
+        <div class="contact-item">{{ data.email }}</div>
+        {% if data.phone %}<div class="contact-item">{{ data.phone }}</div>{% endif %}
+        {% if data.location %}<div class="contact-item">{{ data.location }}</div>{% endif %}
+        {% if data.github %}<div class="contact-item">{{ data.github }}</div>{% endif %}
+        {% if data.website %}<div class="contact-item">{{ data.website }}</div>{% endif %}
+
+        {% if data.skills %}
+        <h3>💡 Habilidades</h3>
+        <ul>
+            {% for skill in data.skills.split(',') %}
+            <li>{{ skill.strip() }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if data.languages %}
+        <h3>🌐 Idiomas</h3>
+        <ul>
+            {% for lang in data.languages.split(',') %}
+            <li>{{ lang.strip() }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if data.certifications and data.certifications|length > 0 %}
+        <h3>🏆 Certificaciones</h3>
+        <ul>
+            {% for cert in data.certifications %}
+            <li>{{ cert.name }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+
+    <div class="main">
+        {% if data.summary %}
+        <h2>Perfil Profesional</h2>
+        <p class="summary">{{ data.summary }}</p>
+        {% endif %}
+
+        {% if data.experience and data.experience|length > 0 %}
+        <h2>Experiencia</h2>
+        {% for job in data.experience %}
+        <div class="item">
+            <div class="item-header">
+                <span class="item-title">{{ job.position }}</span>
+                <span class="item-date">{{ job.startDate }} - {{ job.endDate }}</span>
+            </div>
+            <div class="item-subtitle">{{ job.company }}</div>
+            {% if job.location %}<div class="item-location">{{ job.location }}</div>{% endif %}
+            {% if job.description %}<div class="item-desc">{{ job.description }}</div>{% endif %}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% if data.education and data.education|length > 0 %}
+        <h2>Educación</h2>
+        {% for edu in data.education %}
+        <div class="item">
+            <div class="item-header">
+                <span class="item-title">{{ edu.degree }}</span>
+                <span class="item-date">{{ edu.startDate }} - {{ edu.endDate }}</span>
+            </div>
+            <div class="item-subtitle">{{ edu.institution }}</div>
+            {% if edu.location %}<div class="item-location">{{ edu.location }}</div>{% endif %}
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</body>
+
+</html>

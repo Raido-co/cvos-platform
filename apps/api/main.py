@@ -133,11 +133,22 @@ async def analyze_cv_ai(file: UploadFile = File(...)):
         if os.path.exists(temp_filename):
             os.remove(temp_filename)
 
+@app.get("/templates")
+def list_templates():
+    """Return available CV templates."""
+    from pdf_generator import TEMPLATES
+    return {
+        "templates": [
+            {"id": k, "name": v["name"], "tier": v["tier"]}
+            for k, v in TEMPLATES.items()
+        ]
+    }
+
 @app.post("/generate-pdf")
 async def generate_pdf(data: dict):
     """
-    Genera un PDF del CV basado en los datos del formulario.
-    Retorna el archivo PDF como descarga.
+    Generate CV PDF based on form data.
+    Accepts optional 'template' field in data: 'classic', 'modern', 'executive'.
     """
     from pdf_generator import PDFGenerator
     from fastapi.responses import FileResponse
@@ -146,14 +157,16 @@ async def generate_pdf(data: dict):
     try:
         generator = PDFGenerator()
         
-        # Generar nombre único para el archivo
+        # Get template from request data (default: classic)
+        template = data.get('template', 'classic')
+        
+        # Generate filename
         filename = f"cv_{data.get('fullName', 'unknown').replace(' ', '_')}_{uuid.uuid4().hex[:8]}.pdf"
         output_path = f"/tmp/{filename}"
         
-        # Generar PDF
-        generator.generate_cv(data, output_path)
+        # Generate PDF with selected template
+        generator.generate_cv(data, output_path, template=template)
         
-        # Retornar archivo
         return FileResponse(
             path=output_path,
             filename=filename,
