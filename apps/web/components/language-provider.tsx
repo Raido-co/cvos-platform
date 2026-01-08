@@ -15,6 +15,7 @@ const translations: Record<Locale, Record<string, string>> = {
         // Navigation
         "nav.checking": "ATS Check",
         "nav.dashboard": "Create CV",
+        "nav.pricing": "Pricing",
         "nav.back": "Back",
         "nav.exit": "Exit",
         // Hero
@@ -92,6 +93,7 @@ const translations: Record<Locale, Record<string, string>> = {
         // Navegación
         "nav.checking": "Verificar CV",
         "nav.dashboard": "Crear CV",
+        "nav.pricing": "Precios",
         "nav.back": "Volver",
         "nav.exit": "Salir",
         // Hero
@@ -169,6 +171,7 @@ const translations: Record<Locale, Record<string, string>> = {
         // Навигация
         "nav.checking": "Проверка CV",
         "nav.dashboard": "Создать CV",
+        "nav.pricing": "Цены",
         "nav.back": "Назад",
         "nav.exit": "Выход",
         // Hero
