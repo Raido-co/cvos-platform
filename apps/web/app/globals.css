@@ -47,85 +47,119 @@
   --radius-4xl: calc(var(--radius) + 16px);
 }
 
-/* Force Dark Mode Default */
+/* Catppuccin Mocha Theme */
 :root {
   --radius: 0.5rem;
-  --background: oklch(0.14 0.02 260);
-  /* Deep Navy/Slate #0f1117 */
-  --foreground: oklch(0.92 0.01 260);
-  /* Soft White */
-  --card: oklch(0.17 0.02 260);
-  /* Lighter Slate for Cards */
-  --card-foreground: oklch(0.92 0.01 260);
-  --popover: oklch(0.14 0.02 260);
-  --popover-foreground: oklch(0.92 0.01 260);
-  --primary: oklch(0.65 0.22 280);
-  /* Vibrant Purple/Violet */
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.25 0.03 260);
-  /* Dark Slate Surface */
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.20 0.03 260);
-  --muted-foreground: oklch(0.70 0.02 260);
-  --accent: oklch(0.25 0.03 260);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.60 0.20 20);
-  /* Red/rose */
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.28 0.03 260);
-  /* Visible but subtle borders */
-  --input: oklch(0.28 0.03 260);
-  --ring: oklch(0.65 0.22 280);
-  --chart-1: oklch(0.65 0.22 280);
-  --chart-2: oklch(0.60 0.15 240);
-  --chart-3: oklch(0.70 0.10 200);
-  --chart-4: oklch(0.80 0.12 160);
-  --chart-5: oklch(0.90 0.05 120);
-  --sidebar: oklch(0.12 0.02 260);
-  /* Darker sidebar */
-  --sidebar-foreground: oklch(0.92 0.01 260);
-  --sidebar-primary: oklch(0.65 0.22 280);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.20 0.03 260);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.28 0.03 260);
-  --sidebar-ring: oklch(0.65 0.22 280);
+  
+  /* Catppuccin Mocha - Base Colors */
+  --ctp-rosewater: 10 56% 91%;
+  --ctp-flamingo: 0 59% 88%;
+  --ctp-pink: 316 72% 86%;
+  --ctp-mauve: 267 84% 81%;
+  --ctp-red: 343 81% 75%;
+  --ctp-maroon: 350 65% 77%;
+  --ctp-peach: 23 92% 75%;
+  --ctp-yellow: 41 86% 83%;
+  --ctp-green: 115 54% 76%;
+  --ctp-teal: 170 57% 73%;
+  --ctp-sky: 189 71% 73%;
+  --ctp-sapphire: 199 76% 69%;
+  --ctp-blue: 217 92% 76%;
+  --ctp-lavender: 232 97% 85%;
+  --ctp-text: 226 64% 88%;
+  --ctp-subtext1: 227 35% 80%;
+  --ctp-subtext0: 228 24% 72%;
+  --ctp-overlay2: 228 17% 64%;
+  --ctp-overlay1: 230 13% 55%;
+  --ctp-overlay0: 231 11% 47%;
+  --ctp-surface2: 233 12% 39%;
+  --ctp-surface1: 234 13% 31%;
+  --ctp-surface0: 237 16% 23%;
+  --ctp-base: 240 21% 15%;
+  --ctp-mantle: 240 21% 12%;
+  --ctp-crust: 240 23% 9%;
+
+  /* Theme Mappings */
+  --background: var(--ctp-base);
+  --foreground: var(--ctp-text);
+  
+  --card: var(--ctp-surface0);
+  --card-foreground: var(--ctp-text);
+  
+  --popover: var(--ctp-surface0);
+  --popover-foreground: var(--ctp-text);
+  
+  --primary: var(--ctp-mauve);
+  --primary-foreground: var(--ctp-crust);
+  
+  --secondary: var(--ctp-surface1);
+  --secondary-foreground: var(--ctp-text);
+  
+  --muted: var(--ctp-surface1);
+  --muted-foreground: var(--ctp-subtext0);
+  
+  --accent: var(--ctp-surface2);
+  --accent-foreground: var(--ctp-text);
+  
+  --destructive: var(--ctp-red);
+  --destructive-foreground: var(--ctp-crust);
+  
+  --border: var(--ctp-surface2);
+  --input: var(--ctp-surface1);
+  --ring: var(--ctp-mauve);
+  
+  /* Charts */
+  --chart-1: var(--ctp-blue);
+  --chart-2: var(--ctp-teal);
+  --chart-3: var(--ctp-green);
+  --chart-4: var(--ctp-yellow);
+  --chart-5: var(--ctp-peach);
+  
+  /* Sidebar */
+  --sidebar: var(--ctp-mantle);
+  --sidebar-foreground: var(--ctp-text);
+  --sidebar-primary: var(--ctp-mauve);
+  --sidebar-primary-foreground: var(--ctp-crust);
+  --sidebar-accent: var(--ctp-surface1);
+  --sidebar-accent-foreground: var(--ctp-text);
+  --sidebar-border: var(--ctp-surface2);
+  --sidebar-ring: var(--ctp-mauve);
 }
 
 .dark {
-  /* Inherit root since we want root to be dark by default */
-  --background: oklch(0.14 0.02 260);
-  --foreground: oklch(0.92 0.01 260);
-  --card: oklch(0.17 0.02 260);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.14 0.02 260);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.65 0.22 280);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.25 0.03 260);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.20 0.03 260);
-  --muted-foreground: oklch(0.70 0.02 260);
-  --accent: oklch(0.25 0.03 260);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.70 0.19 22);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.28 0.03 260);
-  --input: oklch(0.28 0.03 260);
-  --ring: oklch(0.65 0.22 280);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.12 0.02 260);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.28 0.03 260);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Dark mode inherits Catppuccin Mocha */
+  --background: var(--ctp-base);
+  --foreground: var(--ctp-text);
+  --card: var(--ctp-surface0);
+  --card-foreground: var(--ctp-text);
+  --popover: var(--ctp-surface0);
+  --popover-foreground: var(--ctp-text);
+  --primary: var(--ctp-mauve);
+  --primary-foreground: var(--ctp-crust);
+  --secondary: var(--ctp-surface1);
+  --secondary-foreground: var(--ctp-text);
+  --muted: var(--ctp-surface1);
+  --muted-foreground: var(--ctp-subtext0);
+  --accent: var(--ctp-surface2);
+  --accent-foreground: var(--ctp-text);
+  --destructive: var(--ctp-red);
+  --destructive-foreground: var(--ctp-crust);
+  --border: var(--ctp-surface2);
+  --input: var(--ctp-surface1);
+  --ring: var(--ctp-mauve);
+  --chart-1: var(--ctp-blue);
+  --chart-2: var(--ctp-teal);
+  --chart-3: var(--ctp-green);
+  --chart-4: var(--ctp-yellow);
+  --chart-5: var(--ctp-peach);
+  --sidebar: var(--ctp-mantle);
+  --sidebar-foreground: var(--ctp-text);
+  --sidebar-primary: var(--ctp-mauve);
+  --sidebar-primary-foreground: var(--ctp-crust);
+  --sidebar-accent: var(--ctp-surface1);
+  --sidebar-accent-foreground: var(--ctp-text);
+  --sidebar-border: var(--ctp-surface2);
+  --sidebar-ring: var(--ctp-mauve);
 }
 
 @layer base {
